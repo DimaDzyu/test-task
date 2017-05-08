@@ -1,0 +1,13 @@
+{
+    "name": "dima/test-task",
+    "description": "Test task",
+    "authors": [
+        {
+            "name": "Dima Dzyubenko",
+            "email": "flexflex@yandex.ru"
+        }
+    ],
+    "require": {
+        "twig/twig": "1.*"
+    }
+}
