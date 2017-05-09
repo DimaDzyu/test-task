@@ -8,6 +8,8 @@ $data_twig = array();
 
 $data['limit'] = 5;
 $data['page'] = $_GET['page'];
+$data['order'] = 'user_id';
+$data['order_by'] = 'ASC';
 $obArticle = new Article();
 
 if ($data_twig = $obArticle->getArticle($data))

@@ -92,7 +92,7 @@ class Article
 
 		//Выборка статей с условием пагинации
 		$start = $page * $num - $num;
-		$stmt = $this->ob_pdo->prepare("SELECT * FROM `articles` LIMIT :start, :num");
+		$stmt = $this->ob_pdo->prepare("SELECT * FROM `articles` ORDER BY ".$data['order']." ".$data['order_by']." LIMIT :start, :num");
 		$stmt->bindValue(':start', $start, \PDO::PARAM_INT);
 		$stmt->bindValue(':num', $num, \PDO::PARAM_INT);
 		$stmt->execute();
