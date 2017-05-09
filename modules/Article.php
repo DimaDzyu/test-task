@@ -90,9 +90,9 @@ class Article
 			$page = $total;
 		}
 
-		//Выборка статей с условием пагинации
+		//Выборка статей и пользователя с условием пагинации
 		$start = $page * $num - $num;
-		$stmt = $this->ob_pdo->prepare("SELECT * FROM `articles` ORDER BY ".$data['order']." ".$data['order_by']." LIMIT :start, :num");
+		$stmt = $this->ob_pdo->prepare("SELECT articles.*, user.name as name_user FROM `articles` LEFT JOIN `user` ON (articles.user_id = user.id) ORDER BY articles.".$data['order']." ".$data['order_by']." LIMIT :start, :num");
 		$stmt->bindValue(':start', $start, \PDO::PARAM_INT);
 		$stmt->bindValue(':num', $num, \PDO::PARAM_INT);
 		$stmt->execute();
@@ -103,21 +103,8 @@ class Article
 		//Группирование по пользователям
 		$articles_group = array();
 		foreach ($articles as $key => $value) {
-			$articles_group[$value['user_id']][] = $value;
-			$arrUser[] = $value['user_id'];
-		}
-
-		//Пользователи
-		$implodeUser = implode(',', array_fill(0, count($arrUser), '?'));
-		$stmt = $this->ob_pdo->prepare('SELECT * FROM `user` WHERE `id` IN('.$implodeUser.')');
-		foreach ($arrUser as $k => $id) {
-			$stmt->bindValue(($k+1), $id, \PDO::PARAM_INT);
-		}
-		$stmt->execute();
-		$fetch_user = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-		foreach ($fetch_user as $key => $value) {
-			$result['articles'][$value['id']]['item'] = $articles_group[$value['id']];
-			$result['articles'][$value['id']]['name'] = $value['name'];
+			$result['articles'][$value['user_id']]['item'][] = $value;
+			$result['articles'][$value['user_id']]['name'] = $value['name_user'];
 		}
 
 		return $result;
